@@ -5,3 +5,5 @@
 /save/mybox.hive
 /save/mybox.lock
 /pubspec.lock
+/bin/task.g.dart
+/bin/task_list.g.dart
