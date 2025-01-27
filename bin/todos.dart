@@ -1,10 +1,8 @@
 import 'package:collection/collection.dart';
-
 import 'task.dart';
 
 class Todos {
   List<Task> taskList = [];
-
   void addTask(String title) {
     // Add task
     int id = taskList.length + 1;
@@ -12,21 +10,24 @@ class Todos {
     taskList.add(task);
   }
 
-  void removeTask(int id) {
+  void tryToRemoveTask(String? taskIdString) {
+    int id = _getIdFromString(taskIdString);
     // Remove task
-    Task? task = taskList.firstWhereOrNull((element) => element.id == id);
-    if (task == null){
-
+    int index = _findTaskIndex(id);
+    if (index < 0) {
+      print('Task with ID $id not found');
+      return;
     }
+    taskList.removeAt(index);
   }
 
-  Task getTask(int index) {
+  Task getTask(int taskId) {
     // Get task
-    return taskList[index];
+    return taskList[taskId];
   }
 
-  Task deletTask(int index) {
-    return taskList.removeAt(index);
+  Task deleteTask(int taskId) {
+    return taskList.removeAt(taskId);
   }
 
   viewTodos() {
@@ -43,29 +44,41 @@ class Todos {
 
   updateTask(int taskId, String title) {
     // Update task
-    int indexWhere = taskList.indexWhere((Task task) {
-      return task.id == taskId;
-    });
-    if (indexWhere < 0) {
+    Task? task = _findTaskById(taskId);
+    if (task == null) {
       print('Task with ID $taskId not found');
-    } else {
-      Task task = taskList[indexWhere];
-      task.title = title;
-      print(task);
+      return;
     }
+    task.title = title;
+    print(task);
   }
 
   void markTaskAsCompleted(int taskId) {
     // Completed task or not
+    Task? task = _findTaskById(taskId);
+    if (task == null) {
+      print('Task with ID $taskId not found');
+      return;
+    }
+    task.isComplete = true;
+    print(task);
+  }
+
+  int _findTaskIndex(int taskId) {
     int indexWhere = taskList.indexWhere((Task task) {
       return task.id == taskId;
     });
-    if (indexWhere < 0) {
-      print('Task with ID $taskId not found');
-    } else {
-      Task task = taskList[indexWhere];
-      task.isComplete = true;
-      print(task);
-    }
+    return indexWhere;
+  }
+
+  int _getIdFromString(String? taskIdString) =>
+      int.tryParse(taskIdString ?? '') ?? -1;
+
+  Task? _findTaskById(int id) {
+    Task? task = taskList.firstWhereOrNull((Task element) => element.id == id);
+    return task;
+  }
+  clearTask(){
+    taskList.clear();
   }
 }
