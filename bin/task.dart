@@ -1,6 +1,12 @@
+import 'package:hive/hive.dart';
+part 'task.g.dart';
+@HiveType(typeId: 1)
 class Task {
+  @HiveField(0)
   int id;
+  @HiveField(1)
   String title;
+  @HiveField(2)
   bool isComplete;
 
   Task({
@@ -23,5 +29,8 @@ class Task {
         id: mapTest['id'],
         title: mapTest['title'],
         isComplete: mapTest['isComplete'] ?? false);
+  }
+  factory Task.empty(){
+    return Task(id: 0, title: "",isComplete: false);
   }
 }

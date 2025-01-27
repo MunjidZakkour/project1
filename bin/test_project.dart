@@ -6,15 +6,17 @@ import 'todos.dart';
 void main() async {
   //Hive box
   Hive.init('save');
-  Box box = await Hive.openBox('myBox');
+  Hive.registerAdapter(TaskAdapter());
+  Box box = await Hive.openBox<List<Task>>('myBox');
   Todos todos = Todos();
-  List<Task> s = [];
-  List<dynamic> test = box.get('dataList', defaultValue: []);
-  for (var i = 0; i < test.length; ++i) {
-    var o = test[i];
-    Map<String, dynamic> n = Map<String, dynamic>.from(o);
-    s.add(Task.fromMap(n));
-  }
+  String listKey = 'dataList';
+  List<Task> s = box.get(listKey, defaultValue: <Task>[])!;
+  // List<dynamic> test = box.get('dataList', defaultValue: []);
+  // for (var i = 0; i < test.length; ++i) {
+  //   var o = test[i];
+  //   Map<String, dynamic> n = Map<String, dynamic>.from(o);
+  //   s.add(Task.fromMap(n));
+  // }
   print('Welcome in Todos App!');
 
   bool isWorking = true;
@@ -84,15 +86,16 @@ void main() async {
         }
         break;
       case '6':
-        List tempList = [];
-        for (int i = 0; i < todos.taskList.length; ++i) {
-          Task o = todos.taskList[i];
-          tempList.add(o.toMap());
-        }
-        await box.put('dataList', tempList);
+        // List tempList = [];
+        // for (int i = 0; i < todos.taskList.length; ++i) {
+        //   Task o = todos.taskList[i];
+        //   tempList.add(o.toMap());
+        // }
+        // await box.put('dataList', tempList);
+        await box.put(listKey, todos.taskList);
         break;
       case '7':
-        await box.delete('dataList');
+        await box.delete(listKey);
         todos.clearTask();
         print('Deleted');
         break;
