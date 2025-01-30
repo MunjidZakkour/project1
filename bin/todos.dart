@@ -2,12 +2,13 @@ import 'package:collection/collection.dart';
 import 'task.dart';
 
 class Todos {
-  List<Task> taskList = [];
+  Todos(this.myList);
+  List<Task> myList;
   void addTask(String title) {
     // Add task
-    int id = taskList.length + 1;
+    int id = myList.length + 1;
     Task task = Task(id: id, title: title, isComplete: false);
-    taskList.add(task);
+    myList.add(task);
   }
 
   void tryToRemoveTask(String? taskIdString) {
@@ -18,26 +19,26 @@ class Todos {
       print('Task with ID $id not found');
       return;
     }
-    taskList.removeAt(index);
+    myList.removeAt(index);
   }
 
   Task getTask(int taskId) {
     // Get task
-    return taskList[taskId];
+    return myList[taskId];
   }
 
   Task deleteTask(int taskId) {
-    return taskList.removeAt(taskId);
+    return myList.removeAt(taskId);
   }
 
   viewTodos() {
     //View todos
-    if (taskList.isEmpty) {
+    if (myList.isEmpty) {
       print('No tasks');
       return;
     }
     print('Current Todos:');
-    for (Task task in taskList) {
+    for (Task task in myList) {
       print(task);
     }
   }
@@ -65,7 +66,7 @@ class Todos {
   }
 
   int _findTaskIndex(int taskId) {
-    int indexWhere = taskList.indexWhere((Task task) {
+    int indexWhere = myList.indexWhere((Task task) {
       return task.id == taskId;
     });
     return indexWhere;
@@ -75,10 +76,11 @@ class Todos {
       int.tryParse(taskIdString ?? '') ?? -1;
 
   Task? _findTaskById(int id) {
-    Task? task = taskList.firstWhereOrNull((Task element) => element.id == id);
+    Task? task = myList.firstWhereOrNull((Task element) => element.id == id);
     return task;
   }
-  clearTask(){
-    taskList.clear();
+
+  clearTask() {
+    myList.clear();
   }
 }

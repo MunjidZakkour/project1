@@ -1,5 +1,6 @@
 import 'package:hive/hive.dart';
 part 'task.g.dart';
+
 @HiveType(typeId: 1)
 class Task {
   @HiveField(0)
@@ -18,19 +19,5 @@ class Task {
   @override
   toString() {
     return 'Task: ($id), Title: $title, ${isComplete ? '[Yes]' : '[No]'}';
-  }
-
-  Map<String, dynamic> toMap() {
-    return {'id': id, 'title': title, 'isComplete': isComplete};
-  }
-
-  factory Task.fromMap(Map<String, dynamic> mapTest) {
-    return Task(
-        id: mapTest['id'],
-        title: mapTest['title'],
-        isComplete: mapTest['isComplete'] ?? false);
-  }
-  factory Task.empty(){
-    return Task(id: 0, title: "",isComplete: false);
   }
 }
