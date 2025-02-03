@@ -1,42 +1,26 @@
 import 'dart:io';
+import 'box_save.dart';
 import 'task.dart';
-import 'package:hive/hive.dart';
 import 'todos.dart';
 
 void main() async {
-  //Hive box
-  Hive.init('save');
-  Hive.registerAdapter(TaskAdapter());
-  Box box = await Hive.openBox('myBox');
-  String listKey = 'dataList';
-  List saveBox = box.get(listKey, defaultValue: [])!;
-  List<Task> newList = saveBox.cast<Task>();
-  Todos todos = Todos(newList);
+  StorageBox storage = await StorageBox.init('myBox1', 'box_folder');
+  String listKeyAtStorage = 'listKey';
+  List byKey = storage.getByKey(listKeyAtStorage, <Task>[]);
+  // print(byKey.runtimeType);
+  Todos todos = Todos(byKey.cast<Task>());
 
   print('Welcome in Todos App!');
 
   bool isWorking = true;
 
   while (isWorking) {
-    List<String> sprint = [
-      'Please select an option',
-      '1. Add a new task',
-      '2. Remove a task',
-      '3. View all tasks',
-      '4. Mark a task as completed',
-      '5. Update task title',
-      '6. Save data',
-      '7. Delete data',
-      '8. Exit'
-    ];
-    for (String msg in sprint) {
-      print(msg);
-    }
-    stdout.write('Select from 1 to ${sprint.length - 1}:');
+    List<String> sprint = _printMessages();
+    stdout.write('Select from 1 to ${sprint.length - 1}:\n');
 
     String? option = stdin.readLineSync();
 
-    print('');
+    print('\n');
     switch (option) {
       case '1':
         stdout.write('Enter a task title: ');
@@ -74,16 +58,36 @@ void main() async {
         }
         break;
       case '6':
-        await box.put(listKey, todos.myList);
+        // Todo: Make all needed action work with save action. (Ok?)
+        await storage.save(listKeyAtStorage, todos.myList);
         break;
       case '7':
-        await box.delete(listKey);
+        await storage.deleteByKey(listKeyAtStorage);
         todos.clearTask();
-        print('Deleted');
+        print('Deleted :)');
         break;
       case '8':
         isWorking = false;
         break;
     }
   }
+}
+
+List<String> _printMessages() {
+  List<String> sprint = [
+    'Please select an option',
+    '1. Add a new task',
+    '2. Remove a task',
+    '3. View all tasks',
+    '4. Mark a task as completed',
+    '5. Update task title',
+    '6. Save data',
+    '7. Delete data',
+    '8. Exit'
+  ];
+  
+  for (String msg in sprint) {
+    print(msg);
+  }
+  return sprint;
 }
