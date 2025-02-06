@@ -1,18 +1,27 @@
 import 'package:collection/collection.dart';
+
 import 'task.dart';
 
 class Todos {
   Todos(this.myList);
+
   List<Task> myList;
+
   void addTask(String title) {
     // Add task
+    Task? alreadyExists = myList.firstWhereOrNull((Task element) =>
+        element.title.toLowerCase() == title.toLowerCase().trim());
+    if (alreadyExists != null) {
+      print('This task is already exists $alreadyExists');
+      return;
+    }
     int id = myList.length + 1;
     Task task = Task(id: id, title: title, isComplete: false);
     myList.add(task);
   }
 
-  void tryToRemoveTask(String? taskIdString) {
-    int id = _getIdFromString(taskIdString);
+  void tryToRemoveTask(String? taskId) {
+    int id = _getIdFromString(taskId);
     // Remove task
     int index = _findTaskIndex(id);
     if (index < 0) {
